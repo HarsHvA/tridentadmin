@@ -80,8 +80,8 @@ class DatabaseService {
           prizePool: value.data['prizePool'] ?? '',
           time: value.data['time'],
           id: value.documentID,
-          roomId: value.data['roomId'],
-          roomPassword: value.data['roomPassword']);
+          roomId: value.data['roomId'] ?? '',
+          roomPassword: value.data['roomPassword'] ?? '');
     });
   }
 

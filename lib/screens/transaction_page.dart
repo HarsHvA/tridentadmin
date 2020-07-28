@@ -1,14 +1,14 @@
-import 'package:TridentAdmin/screens/desktop/desktop_create_match.dart';
-import 'package:TridentAdmin/screens/mobile/mobile_create_match.dart';
+import 'package:TridentAdmin/screens/desktop/desktop_transaction.dart';
+import 'package:TridentAdmin/screens/mobile/mobile_transaction.dart';
 import 'package:TridentAdmin/services/databse_services.dart';
 import 'package:flutter/material.dart';
 
-class CreateMatchPage extends StatefulWidget {
+class TransactionPage extends StatefulWidget {
   @override
-  _CreateMatchPageState createState() => _CreateMatchPageState();
+  _TransactionPageState createState() => _TransactionPageState();
 }
 
-class _CreateMatchPageState extends State<CreateMatchPage> {
+class _TransactionPageState extends State<TransactionPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
@@ -18,9 +18,9 @@ class _CreateMatchPageState extends State<CreateMatchPage> {
             if (snapshot.data) {
               return LayoutBuilder(builder: (context, constraints) {
                 if (constraints.maxWidth > 700) {
-                  return DesktopCreateMatch();
+                  return DesktopTransaction();
                 } else {
-                  return MobileCreateMatch();
+                  return MobileTransaction();
                 }
               });
             } else {

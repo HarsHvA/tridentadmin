@@ -1,5 +1,6 @@
 import 'package:TridentAdmin/home_page.dart';
 import 'package:TridentAdmin/screens/create_match_page.dart';
+import 'package:TridentAdmin/screens/edit_match_page.dart';
 import 'package:TridentAdmin/screens/feed.dart';
 import 'package:TridentAdmin/screens/manage_match_page.dart';
 import 'package:TridentAdmin/screens/post_result_page.dart';
@@ -26,7 +27,8 @@ class MyApp extends StatelessWidget {
           '/feed': (context) => Feed(),
           '/createMatch': (context) => CreateMatchPage(),
           '/manageMatches': (context) => ManageMatches(),
-          '/postResult': (context) => PostResult(matchId: null)
+          '/postResult': (context) => PostResult(matchId: null),
+          '/editMatch': (context) => EditMatch(matchId: null)
         });
   }
 }

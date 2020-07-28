@@ -1,4 +1,6 @@
 import 'package:TridentAdmin/modals/Match.dart';
+import 'package:TridentAdmin/screens/distribute_reward_page.dart';
+import 'package:TridentAdmin/screens/edit_match_page.dart';
 import 'package:TridentAdmin/screens/post_result_page.dart';
 import 'package:TridentAdmin/services/databse_services.dart';
 import 'package:flutter/material.dart';
@@ -145,7 +147,14 @@ class _UpcomingMatchesState extends State<UpcomingMatches> {
                                     child: RaisedButton(
                                       color: Colors.red,
                                       colorBrightness: Brightness.light,
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        String id = snapshot.data[index].id;
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .push(MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EditMatch(matchId: id)));
+                                      },
                                       child: Text('Edit Match'),
                                       textColor: Colors.white,
                                     ),
@@ -307,7 +316,14 @@ class _LiveMatchesState extends State<LiveMatches> {
                                     child: RaisedButton(
                                       color: Colors.red,
                                       colorBrightness: Brightness.light,
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        String id = snapshot.data[index].id;
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .push(MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EditMatch(matchId: id)));
+                                      },
                                       child: Text('Edit Match'),
                                       textColor: Colors.white,
                                     ),
@@ -317,7 +333,14 @@ class _LiveMatchesState extends State<LiveMatches> {
                                     child: RaisedButton(
                                       color: Colors.green,
                                       colorBrightness: Brightness.light,
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        String id = snapshot.data[index].id;
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .push(MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PostResult(matchId: id)));
+                                      },
                                       child: _buttonFunctionName(
                                           snapshot.data[index].resultOut),
                                       textColor: Colors.white,
@@ -462,7 +485,14 @@ class _CompletedMatchesState extends State<CompletedMatches> {
                                     child: RaisedButton(
                                       color: Colors.red,
                                       colorBrightness: Brightness.light,
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        String id = snapshot.data[index].id;
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .push(MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EditMatch(matchId: id)));
+                                      },
                                       child: Text('Edit Match'),
                                       textColor: Colors.white,
                                     ),
@@ -472,9 +502,38 @@ class _CompletedMatchesState extends State<CompletedMatches> {
                                     child: RaisedButton(
                                       color: Colors.green,
                                       colorBrightness: Brightness.light,
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        String id = snapshot.data[index].id;
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .push(MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PostResult(matchId: id)));
+                                      },
                                       child: _buttonFunctionName(
                                           snapshot.data[index].resultOut),
+                                      textColor: Colors.white,
+                                    ),
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: RaisedButton(
+                                      color: Colors.black,
+                                      colorBrightness: Brightness.light,
+                                      onPressed: () {
+                                        String id = snapshot.data[index].id;
+                                        String kill = snapshot
+                                            .data[index].perKill
+                                            .toString();
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .push(MaterialPageRoute(
+                                                builder: (context) =>
+                                                    DistributeRewardPage(
+                                                        matchId: id,
+                                                        perKill: kill)));
+                                      },
+                                      child: Text('Distribute reward'),
                                       textColor: Colors.white,
                                     ),
                                   ),

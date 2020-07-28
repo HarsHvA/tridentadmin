@@ -1,16 +1,21 @@
-import 'package:TridentAdmin/screens/desktop/desktop_create_match.dart';
-import 'package:TridentAdmin/screens/mobile/mobile_create_match.dart';
+import 'package:TridentAdmin/screens/desktop/desktop_edit_match.dart';
+import 'package:TridentAdmin/screens/mobile/mobile_edit_match.dart';
 import 'package:TridentAdmin/services/databse_services.dart';
 import 'package:flutter/material.dart';
 
-class CreateMatchPage extends StatefulWidget {
+class EditMatch extends StatefulWidget {
+  final String matchId;
+  EditMatch({Key key, @required this.matchId}) : super(key: key);
   @override
-  _CreateMatchPageState createState() => _CreateMatchPageState();
+  _EditMatchState createState() => _EditMatchState(matchId);
 }
 
-class _CreateMatchPageState extends State<CreateMatchPage> {
+class _EditMatchState extends State<EditMatch> {
+  final String matchId;
+  _EditMatchState(this.matchId);
   @override
   Widget build(BuildContext context) {
+    double unitWidthValue = MediaQuery.of(context).size.width * 0.01;
     return FutureBuilder<bool>(
         future: DatabaseService().checkIfAdmin(),
         builder: (context, snapshot) {
@@ -18,9 +23,11 @@ class _CreateMatchPageState extends State<CreateMatchPage> {
             if (snapshot.data) {
               return LayoutBuilder(builder: (context, constraints) {
                 if (constraints.maxWidth > 700) {
-                  return DesktopCreateMatch();
+                  return DesktopEditMatch(
+                    matchId: matchId,
+                  );
                 } else {
-                  return MobileCreateMatch();
+                  return MobileEditMatch(matchId: matchId);
                 }
               });
             } else {

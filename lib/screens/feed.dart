@@ -1,6 +1,6 @@
 import 'package:TridentAdmin/screens/create_match_page.dart';
 import 'package:TridentAdmin/screens/manage_match_page.dart';
-import 'package:TridentAdmin/screens/transactions_page.dart';
+import 'package:TridentAdmin/screens/transaction_page.dart';
 import 'package:TridentAdmin/services/AuthService.dart';
 import 'package:TridentAdmin/services/databse_services.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -122,7 +122,7 @@ class DesktopFeed extends StatefulWidget {
 
 class _DesktopFeedState extends State<DesktopFeed> {
   int _currentIndex = 0;
-  final pages = [CreateMatchPage(), ManageMatches(), TransactionsPage()];
+  final pages = [CreateMatchPage(), ManageMatches(), TransactionPage()];
   @override
   Widget build(BuildContext context) {
     double unitWidthValue = MediaQuery.of(context).size.width * 0.01;
@@ -375,6 +375,34 @@ class _MobileFeedState extends State<MobileFeed> {
               ),
               onTap: () {
                 Navigator.pushNamed(context, '/manageMatches');
+              },
+            ),
+            GestureDetector(
+              child: Card(
+                elevation: 10,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.exit_to_app,
+                      size: unitHeightValue * 10,
+                      color: Colors.white,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "Logout",
+                        style: TextStyle(
+                            fontSize: unitHeightValue * 2, color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+                color: Colors.black,
+              ),
+              onTap: () {
+                AuthService().signOut();
+                Navigator.pushReplacementNamed(context, '/home');
               },
             ),
           ],

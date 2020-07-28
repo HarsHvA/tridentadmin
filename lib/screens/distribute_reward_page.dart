@@ -1,14 +1,21 @@
-import 'package:TridentAdmin/screens/desktop/desktop_create_match.dart';
-import 'package:TridentAdmin/screens/mobile/mobile_create_match.dart';
+import 'package:TridentAdmin/screens/desktop/desktop_disribute_reward.dart';
+import 'package:TridentAdmin/screens/mobile/mobile_distribute_reward.dart';
 import 'package:TridentAdmin/services/databse_services.dart';
 import 'package:flutter/material.dart';
 
-class CreateMatchPage extends StatefulWidget {
+class DistributeRewardPage extends StatefulWidget {
+  final String matchId, perKill;
+  DistributeRewardPage(
+      {Key key, @required this.matchId, @required this.perKill})
+      : super(key: key);
   @override
-  _CreateMatchPageState createState() => _CreateMatchPageState();
+  _DistributeRewardPageState createState() =>
+      _DistributeRewardPageState(matchId, perKill);
 }
 
-class _CreateMatchPageState extends State<CreateMatchPage> {
+class _DistributeRewardPageState extends State<DistributeRewardPage> {
+  final String matchId, perKill;
+  _DistributeRewardPageState(this.matchId, this.perKill);
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
@@ -18,9 +25,15 @@ class _CreateMatchPageState extends State<CreateMatchPage> {
             if (snapshot.data) {
               return LayoutBuilder(builder: (context, constraints) {
                 if (constraints.maxWidth > 700) {
-                  return DesktopCreateMatch();
+                  return DesktopDistributeReward(
+                    matchId: matchId,
+                    perKill: perKill,
+                  );
                 } else {
-                  return MobileCreateMatch();
+                  return MobileDistributeReward(
+                    matchId: matchId,
+                    perKill: perKill,
+                  );
                 }
               });
             } else {
