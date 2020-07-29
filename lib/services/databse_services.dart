@@ -4,8 +4,8 @@ import 'package:TridentAdmin/services/AuthService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseService {
-  final CollectionReference usersCollection =
-      Firestore.instance.collection('users');
+  final CollectionReference adminsCollection =
+      Firestore.instance.collection('admins');
 
   final CollectionReference matchesCollection =
       Firestore.instance.collection('customMatchRooms');
@@ -17,8 +17,8 @@ class DatabaseService {
     bool dog = false;
     String userId = await AuthService().uID();
     try {
-      await usersCollection.document(userId).get().then((value) {
-        dog = value.data['dog'] ?? false;
+      await adminsCollection.document(userId).get().then((value) {
+        dog = value.data['isAdmin'] ?? false;
       });
     } catch (e) {
       print(e);
