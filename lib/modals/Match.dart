@@ -16,6 +16,7 @@ class Matches {
   bool resultOut;
   String roomId;
   String roomPassword;
+  String description;
 
   Matches(
       {this.game,
@@ -32,5 +33,6 @@ class Matches {
       this.time,
       this.resultOut,
       this.roomId,
-      this.roomPassword});
+      this.roomPassword,
+      this.description});
 }

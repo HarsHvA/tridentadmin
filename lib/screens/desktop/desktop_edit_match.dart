@@ -22,7 +22,13 @@ class _DesktopEditMatchState extends State<DesktopEditMatch> {
   _DesktopEditMatchState(this.matchId);
 
   final formKey = new GlobalKey<FormState>();
-  String _status, _prizePool, _name, _matchNo, _roomId, _roomPassword = '';
+  String _status,
+      _prizePool,
+      _name,
+      _matchNo,
+      _roomId,
+      _roomPassword,
+      _description = '';
   int _perKill, _ticket, _maxParticipants;
   final format = DateFormat("yyyy-MM-dd HH:mm");
   DateTime _dateTime;
@@ -412,6 +418,8 @@ class _DesktopEditMatchState extends State<DesktopEditMatch> {
                                                     height: 5,
                                                   ),
                                                   TextFormField(
+                                                    initialValue:
+                                                        snapshot.data.roomId,
                                                     onSaved: (value) {
                                                       _roomId = value ?? '';
                                                     },
@@ -456,9 +464,57 @@ class _DesktopEditMatchState extends State<DesktopEditMatch> {
                                                     height: 5,
                                                   ),
                                                   TextFormField(
+                                                    initialValue: snapshot
+                                                        .data.roomPassword,
                                                     onSaved: (value) {
                                                       _roomPassword =
                                                           value ?? '';
+                                                    },
+                                                    decoration: InputDecoration(
+                                                      contentPadding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 0,
+                                                              horizontal: 10),
+                                                      enabledBorder:
+                                                          OutlineInputBorder(
+                                                              borderSide: BorderSide(
+                                                                  color: Colors
+                                                                          .grey[
+                                                                      400])),
+                                                      border: OutlineInputBorder(
+                                                          borderSide:
+                                                              BorderSide(
+                                                                  color: Colors
+                                                                          .grey[
+                                                                      400])),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text(
+                                                    'Description',
+                                                    style: TextStyle(
+                                                        fontSize:
+                                                            unitHeightValue * 2,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: Colors.black87),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  TextFormField(
+                                                    initialValue: snapshot
+                                                        .data.description,
+                                                    onSaved: (value) {
+                                                      _description = value ??
+                                                          snapshot.data
+                                                              .description ??
+                                                          '';
                                                     },
                                                     decoration: InputDecoration(
                                                       contentPadding:
@@ -536,7 +592,8 @@ class _DesktopEditMatchState extends State<DesktopEditMatch> {
         'ticket': _ticket,
         'time': _dateTime,
         'roomId': _roomId,
-        'roomPassword': _roomPassword
+        'roomPassword': _roomPassword,
+        'description': _description
       });
       pr.hide();
       Toast.show('Match Updated', context);

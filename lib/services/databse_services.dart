@@ -1,5 +1,6 @@
 import 'package:TridentAdmin/modals/Match.dart';
 import 'package:TridentAdmin/modals/participants.dart';
+import 'package:TridentAdmin/modals/transaction.dart';
 import 'package:TridentAdmin/services/AuthService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -81,7 +82,8 @@ class DatabaseService {
           time: value.data['time'],
           id: value.documentID,
           roomId: value.data['roomId'] ?? '',
-          roomPassword: value.data['roomPassword'] ?? '');
+          roomPassword: value.data['roomPassword'] ?? '',
+          description: value.data['description' ?? '']);
     });
   }
 
@@ -103,6 +105,22 @@ class DatabaseService {
           resultOut: e.data['result'] ?? false,
           roomId: e.data['roomId'] ?? '',
           roomPassword: e.data['roomPassword'] ?? '');
+    }).toList();
+  }
+
+  Stream<List<TransactionsModel>> get transactions {
+    return matchesCollection.snapshots().map(_transactionListFromSnapShot);
+  }
+
+  List<TransactionsModel> _transactionListFromSnapShot(
+      QuerySnapshot querySnapshot) {
+    return querySnapshot.documents.map((e) {
+      return TransactionsModel(
+          amount: e.data['amount'] ?? 0,
+          mode: e.data['mode'] ?? '',
+          mobileNo: e.data['mobileNo'] ?? 0,
+          status: e.data['status'] ?? '',
+          uid: e.data['uid'] ?? '');
     }).toList();
   }
 }
