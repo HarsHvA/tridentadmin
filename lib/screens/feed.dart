@@ -328,27 +328,32 @@ class _MobileFeedState extends State<MobileFeed> {
                 Navigator.pushNamed(context, '/createMatch');
               },
             ),
-            Card(
-              elevation: 10,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    Icons.account_balance_wallet,
-                    size: unitHeightValue * 10,
-                    color: Colors.white,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Withdrawl request",
-                      style: TextStyle(
-                          fontSize: unitHeightValue * 2, color: Colors.white),
+            GestureDetector(
+              child: Card(
+                elevation: 10,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.account_balance_wallet,
+                      size: unitHeightValue * 10,
+                      color: Colors.white,
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "Withdrawl request",
+                        style: TextStyle(
+                            fontSize: unitHeightValue * 2, color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+                color: Colors.black,
               ),
-              color: Colors.black,
+              onTap: () {
+                Navigator.pushNamed(context, '/transaction');
+              },
             ),
             GestureDetector(
               child: Card(

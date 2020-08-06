@@ -1,17 +1,20 @@
 import 'package:TridentAdmin/modals/transaction.dart';
-import 'package:TridentAdmin/screens/desktop/userTransactionPage.dart';
 import 'package:TridentAdmin/services/databse_services.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 
-class DesktopTransaction extends StatefulWidget {
+class UserTransactionPage extends StatefulWidget {
+  final String uid;
+  UserTransactionPage({Key key, @required this.uid}) : super(key: key);
   @override
-  _DesktopTransactionState createState() => _DesktopTransactionState();
+  _UserTransactionPageState createState() => _UserTransactionPageState(uid);
 }
 
-class _DesktopTransactionState extends State<DesktopTransaction> {
+class _UserTransactionPageState extends State<UserTransactionPage> {
+  final String uid;
+  _UserTransactionPageState(this.uid);
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -29,7 +32,12 @@ class _DesktopTransactionState extends State<DesktopTransaction> {
             ],
             labelColor: Colors.red,
           )),
-          body: TabBarView(children: [PendingTab(), CompletedTab()]),
+          body: TabBarView(children: [
+            PendingTab(uid: uid),
+            CompletedTab(
+              uid: uid,
+            )
+          ]),
         ),
       ),
     );
@@ -37,11 +45,15 @@ class _DesktopTransactionState extends State<DesktopTransaction> {
 }
 
 class PendingTab extends StatefulWidget {
+  final String uid;
+  PendingTab({Key key, @required this.uid}) : super(key: key);
   @override
-  _PendingTabState createState() => _PendingTabState();
+  _PendingTabState createState() => _PendingTabState(uid);
 }
 
 class _PendingTabState extends State<PendingTab> {
+  final String uid;
+  _PendingTabState(this.uid);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +62,7 @@ class _PendingTabState extends State<PendingTab> {
         child: Container(
           child: SingleChildScrollView(
             child: StreamBuilder<List<TransactionsModel>>(
-                stream: DatabaseService().adminPendingTransactions,
+                stream: DatabaseService().getUserPendingTransaction(uid),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return ListView.builder(
@@ -94,33 +106,17 @@ class _PendingTabState extends State<PendingTab> {
                                           child: RaisedButton(
                                             color: Colors.red,
                                             colorBrightness: Brightness.light,
-                                            onPressed: () {
-                                              Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          UserTransactionPage(
-                                                              uid: snapshot
-                                                                  .data[index]
-                                                                  .uid)));
-                                            },
-                                            child: Text('get Info'),
-                                            textColor: Colors.white,
-                                          ),
-                                        ),
-                                        Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: RaisedButton(
-                                            color: Colors.green,
-                                            colorBrightness: Brightness.light,
                                             onPressed: () async {
                                               CollectionReference
-                                                  pendingTransactions =
-                                                  Firestore.instance.collection(
-                                                      'pendingTransaction');
+                                                  transactionCollection =
+                                                  Firestore.instance
+                                                      .collection('users')
+                                                      .document(uid)
+                                                      .collection(
+                                                          'transactions');
 
                                               try {
-                                                await pendingTransactions
+                                                transactionCollection
                                                     .document(snapshot
                                                         .data[index]
                                                         .transactionId)
@@ -143,9 +139,6 @@ class _PendingTabState extends State<PendingTab> {
                                   ),
                                 ),
                               ),
-                              onTap: () {
-                                // _showRewardDialog(uid);
-                              },
                             ),
                           );
                         });
@@ -160,23 +153,18 @@ class _PendingTabState extends State<PendingTab> {
       ),
     );
   }
-
-  _showRewardDialog(uid) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog();
-      },
-    );
-  }
 }
 
 class CompletedTab extends StatefulWidget {
+  final String uid;
+  CompletedTab({Key key, @required this.uid}) : super(key: key);
   @override
-  _CompletedTabState createState() => _CompletedTabState();
+  _CompletedTabState createState() => _CompletedTabState(uid);
 }
 
 class _CompletedTabState extends State<CompletedTab> {
+  final String uid;
+  _CompletedTabState(this.uid);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -185,7 +173,7 @@ class _CompletedTabState extends State<CompletedTab> {
         child: Container(
           child: SingleChildScrollView(
             child: StreamBuilder<List<TransactionsModel>>(
-                stream: DatabaseService().adminPendingTransactions,
+                stream: DatabaseService().getUserCompletedTransaction(uid),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return ListView.builder(
@@ -223,30 +211,14 @@ class _CompletedTabState extends State<CompletedTab> {
                                                 snapshot.data[index].mobileNo
                                                     .toString() ??
                                             ''),
-                                        Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: RaisedButton(
-                                            color: Colors.red,
-                                            colorBrightness: Brightness.light,
-                                            onPressed: () {
-                                              Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          UserTransactionPage(
-                                                              uid: snapshot
-                                                                  .data[index]
-                                                                  .uid)));
-                                            },
-                                            child: Text('get Info'),
-                                            textColor: Colors.white,
-                                          ),
-                                        ),
                                       ],
                                     ),
                                   ),
                                 ),
                               ),
+                              onTap: () {
+                                // _showRewardDialog(uid);
+                              },
                             ),
                           );
                         });

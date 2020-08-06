@@ -14,6 +14,12 @@ class DatabaseService {
   final CollectionReference participantsCollection =
       Firestore.instance.collection('participants');
 
+  final CollectionReference pendingTransactions =
+      Firestore.instance.collection('pendingTransaction');
+
+  final CollectionReference userCollection =
+      Firestore.instance.collection('users');
+
   Future<bool> checkIfAdmin() async {
     bool dog = false;
     String userId = await AuthService().uID();
@@ -66,6 +72,43 @@ class DatabaseService {
     });
   }
 
+  Stream<List<TransactionsModel>> getUserPendingTransaction(userId) {
+    CollectionReference transactionCollection = Firestore.instance
+        .collection('users')
+        .document(userId)
+        .collection('transactions')
+        .where('status', isEqualTo: 'pending');
+    return transactionCollection.snapshots().map((event) {
+      return event.documents.map((e) {
+        return TransactionsModel(
+            amount: e.data['amount'],
+            mode: e.data['mode'],
+            mobileNo: e.data['mobileNo'],
+            status: e.data['status'],
+            uid: e.data['uid'],
+            transactionId: e.documentID);
+      }).toList();
+    });
+  }
+
+  Stream<List<TransactionsModel>> getUserCompletedTransaction(userId) {
+    CollectionReference transactionCollection = Firestore.instance
+        .collection('users')
+        .document(userId)
+        .collection('transactions')
+        .where('status', isEqualTo: 'completed');
+    return transactionCollection.snapshots().map((event) {
+      return event.documents.map((e) {
+        return TransactionsModel(
+            amount: e.data['amount'],
+            mode: e.data['mode'],
+            mobileNo: e.data['mobileNo'],
+            status: e.data['status'],
+            uid: e.data['uid']);
+      }).toList();
+    });
+  }
+
   Stream<Matches> getMatchDetails(id) {
     return matchesCollection.document(id).snapshots().map((value) {
       return Matches(
@@ -108,8 +151,18 @@ class DatabaseService {
     }).toList();
   }
 
-  Stream<List<TransactionsModel>> get transactions {
-    return matchesCollection.snapshots().map(_transactionListFromSnapShot);
+  Stream<List<TransactionsModel>> get adminPendingTransactions {
+    return pendingTransactions
+        .where('status', isEqualTo: 'pending')
+        .snapshots()
+        .map(_transactionListFromSnapShot);
+  }
+
+  Stream<List<TransactionsModel>> get adminCompletedTransactions {
+    return pendingTransactions
+        .where('status', isEqualTo: 'completed')
+        .snapshots()
+        .map(_transactionListFromSnapShot);
   }
 
   List<TransactionsModel> _transactionListFromSnapShot(
@@ -120,7 +173,8 @@ class DatabaseService {
           mode: e.data['mode'] ?? '',
           mobileNo: e.data['mobileNo'] ?? 0,
           status: e.data['status'] ?? '',
-          uid: e.data['uid'] ?? '');
+          uid: e.data['uid'] ?? '',
+          transactionId: e.documentID);
     }).toList();
   }
 }

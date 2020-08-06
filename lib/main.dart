@@ -4,6 +4,7 @@ import 'package:TridentAdmin/screens/edit_match_page.dart';
 import 'package:TridentAdmin/screens/feed.dart';
 import 'package:TridentAdmin/screens/manage_match_page.dart';
 import 'package:TridentAdmin/screens/post_result_page.dart';
+import 'package:TridentAdmin/screens/transaction_page.dart';
 import 'package:TridentAdmin/services/AuthService.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +29,8 @@ class MyApp extends StatelessWidget {
           '/createMatch': (context) => CreateMatchPage(),
           '/manageMatches': (context) => ManageMatches(),
           '/postResult': (context) => PostResult(matchId: null),
-          '/editMatch': (context) => EditMatch(matchId: null)
+          '/editMatch': (context) => EditMatch(matchId: null),
+          '/transaction': (context) => TransactionPage(),
         });
   }
 }
