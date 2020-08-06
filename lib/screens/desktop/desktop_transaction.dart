@@ -160,15 +160,6 @@ class _PendingTabState extends State<PendingTab> {
       ),
     );
   }
-
-  _showRewardDialog(uid) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog();
-      },
-    );
-  }
 }
 
 class CompletedTab extends StatefulWidget {
@@ -185,7 +176,7 @@ class _CompletedTabState extends State<CompletedTab> {
         child: Container(
           child: SingleChildScrollView(
             child: StreamBuilder<List<TransactionsModel>>(
-                stream: DatabaseService().adminPendingTransactions,
+                stream: DatabaseService().adminCompletedTransactions,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return ListView.builder(
@@ -252,7 +243,7 @@ class _CompletedTabState extends State<CompletedTab> {
                         });
                   } else {
                     return Container(
-                      child: AutoSizeText('No pending transactions :-)'),
+                      child: AutoSizeText('No completed transactions :-)'),
                     );
                   }
                 }),

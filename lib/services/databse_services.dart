@@ -76,9 +76,11 @@ class DatabaseService {
     CollectionReference transactionCollection = Firestore.instance
         .collection('users')
         .document(userId)
-        .collection('transactions')
-        .where('status', isEqualTo: 'pending');
-    return transactionCollection.snapshots().map((event) {
+        .collection('transactions');
+    return transactionCollection
+        .where('status', isEqualTo: 'pending')
+        .snapshots()
+        .map((event) {
       return event.documents.map((e) {
         return TransactionsModel(
             amount: e.data['amount'],
@@ -95,9 +97,11 @@ class DatabaseService {
     CollectionReference transactionCollection = Firestore.instance
         .collection('users')
         .document(userId)
-        .collection('transactions')
-        .where('status', isEqualTo: 'completed');
-    return transactionCollection.snapshots().map((event) {
+        .collection('transactions');
+    return transactionCollection
+        .where('status', isEqualTo: 'completed')
+        .snapshots()
+        .map((event) {
       return event.documents.map((e) {
         return TransactionsModel(
             amount: e.data['amount'],

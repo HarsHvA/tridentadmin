@@ -15,7 +15,6 @@ class _EditMatchState extends State<EditMatch> {
   _EditMatchState(this.matchId);
   @override
   Widget build(BuildContext context) {
-    double unitWidthValue = MediaQuery.of(context).size.width * 0.01;
     return FutureBuilder<bool>(
         future: DatabaseService().checkIfAdmin(),
         builder: (context, snapshot) {

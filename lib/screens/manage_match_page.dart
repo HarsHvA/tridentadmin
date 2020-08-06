@@ -11,7 +11,6 @@ class ManageMatches extends StatefulWidget {
 class _ManageMatchesState extends State<ManageMatches> {
   @override
   Widget build(BuildContext context) {
-    double unitWidthValue = MediaQuery.of(context).size.width * 0.01;
     return FutureBuilder<bool>(
         future: DatabaseService().checkIfAdmin(),
         builder: (context, snapshot) {

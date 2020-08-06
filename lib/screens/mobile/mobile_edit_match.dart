@@ -572,10 +572,6 @@ class _MobileEditMatchState extends State<MobileEditMatch> {
     );
   }
 
-  _gameTime(time) {
-    return DateFormat.yMMMd().add_jm().format(time);
-  }
-
   _updateMatchData(id) async {
     pr.show();
     try {
