@@ -26,7 +26,7 @@ class _EditMatchState extends State<EditMatch> {
                     matchId: matchId,
                   );
                 } else {
-                  return MobileEditMatch(matchId: matchId);
+                  return DesktopEditMatch(matchId: matchId);
                 }
               });
             } else {

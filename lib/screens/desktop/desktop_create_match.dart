@@ -25,7 +25,7 @@ class _DesktopCreateMatchState extends State<DesktopCreateMatch> {
       _roomPassword,
       _description = '';
 
-  int _perKill, _ticket, _maxParticipants;
+  int _perKill, _ticket, _maxParticipants, noOfGroups;
   final format = DateFormat("yyyy-MM-dd HH:mm");
   DateTime _dateTime;
   ProgressDialog pr;
@@ -339,6 +339,40 @@ class _DesktopCreateMatchState extends State<DesktopCreateMatch> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
+                                  'No of groups',
+                                  style: TextStyle(
+                                      fontSize: unitHeightValue * 2,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black87),
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                TextFormField(
+                                  onSaved: (value) {
+                                    noOfGroups = int.parse(value);
+                                  },
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 0, horizontal: 10),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.grey[400])),
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.grey[400])),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 30,
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
                                   'Ticket',
                                   style: TextStyle(
                                       fontSize: unitHeightValue * 2,
@@ -564,7 +598,8 @@ class _DesktopCreateMatchState extends State<DesktopCreateMatch> {
         'time': _dateTime,
         'roomId': _roomId,
         'roomPassword': _roomPassword,
-        'description': _description
+        'description': _description,
+        'noOfGroups': noOfGroups
       });
       pr.hide();
       Toast.show('Match created', context);

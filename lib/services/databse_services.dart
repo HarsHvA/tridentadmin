@@ -130,7 +130,8 @@ class DatabaseService {
           id: value.documentID,
           roomId: value.data['roomId'] ?? '',
           roomPassword: value.data['roomPassword'] ?? '',
-          description: value.data['description' ?? '']);
+          description: value.data['description'] ?? '',
+          noOfGroups: value.data['noOfGroups'] ?? 0);
     });
   }
 
@@ -151,7 +152,8 @@ class DatabaseService {
           time: e.data['time'],
           resultOut: e.data['result'] ?? false,
           roomId: e.data['roomId'] ?? '',
-          roomPassword: e.data['roomPassword'] ?? '');
+          roomPassword: e.data['roomPassword'] ?? '',
+          noOfGroups: e.data['noOfGroups'] ?? 0);
     }).toList();
   }
 

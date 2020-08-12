@@ -5,6 +5,7 @@ class Matches {
   String name;
   String status;
   int ticket;
+  int noOfGroups;
   String imageUrl;
   String map;
   String matchNo;
@@ -34,5 +35,6 @@ class Matches {
       this.resultOut,
       this.roomId,
       this.roomPassword,
-      this.description});
+      this.description,
+      this.noOfGroups});
 }

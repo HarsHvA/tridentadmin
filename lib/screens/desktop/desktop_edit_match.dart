@@ -29,7 +29,7 @@ class _DesktopEditMatchState extends State<DesktopEditMatch> {
       _roomId,
       _roomPassword,
       _description = '';
-  int _perKill, _ticket, _maxParticipants;
+  int _perKill, _ticket, _maxParticipants, _noOfGroups;
   final format = DateFormat("yyyy-MM-dd HH:mm");
   DateTime _dateTime;
   ProgressDialog pr;
@@ -299,43 +299,98 @@ class _DesktopEditMatchState extends State<DesktopEditMatch> {
                                       ],
                                     ),
                                     Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            'NoOfGroups',
+                                            style: TextStyle(
+                                                fontSize: unitHeightValue * 2,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black87),
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          TextFormField(
+                                            initialValue: snapshot
+                                                .data.noOfGroups
+                                                .toString(),
+                                            onSaved: (value) {
+                                              _noOfGroups = int.parse(value) ??
+                                                  snapshot.data.noOfGroups
+                                                      .toString();
+                                            },
+                                            keyboardType: TextInputType.number,
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                      vertical: 0,
+                                                      horizontal: 10),
+                                              enabledBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey[400])),
+                                              border: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey[400])),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 30,
+                                          ),
+                                        ]),
+                                    Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        Text(
-                                          'Ticket',
-                                          style: TextStyle(
-                                              fontSize: unitHeightValue * 2,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black87),
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        TextFormField(
-                                          initialValue:
-                                              snapshot.data.ticket.toString(),
-                                          onSaved: (value) {
-                                            _ticket = int.parse(value) ??
-                                                snapshot.data.ticket.toString();
-                                          },
-                                          keyboardType: TextInputType.number,
-                                          decoration: InputDecoration(
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    vertical: 0,
-                                                    horizontal: 10),
-                                            enabledBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey[400])),
-                                            border: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey[400])),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 30,
-                                        ),
+                                        Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                'Ticket',
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        unitHeightValue * 2,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.black87),
+                                              ),
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              TextFormField(
+                                                initialValue: snapshot
+                                                    .data.ticket
+                                                    .toString(),
+                                                onSaved: (value) {
+                                                  _ticket = int.parse(value) ??
+                                                      snapshot.data.ticket
+                                                          .toString();
+                                                },
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                decoration: InputDecoration(
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          vertical: 0,
+                                                          horizontal: 10),
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
+                                                          borderSide:
+                                                              BorderSide(
+                                                                  color: Colors
+                                                                          .grey[
+                                                                      400])),
+                                                  border: OutlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: Colors
+                                                              .grey[400])),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 30,
+                                              ),
+                                            ]),
                                         Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -589,7 +644,8 @@ class _DesktopEditMatchState extends State<DesktopEditMatch> {
         'time': _dateTime,
         'roomId': _roomId,
         'roomPassword': _roomPassword,
-        'description': _description
+        'description': _description,
+        'noOfGroups': _noOfGroups
       });
       pr.hide();
       Toast.show('Match Updated', context);

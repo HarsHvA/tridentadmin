@@ -20,7 +20,7 @@ class _CreateMatchPageState extends State<CreateMatchPage> {
                 if (constraints.maxWidth > 700) {
                   return DesktopCreateMatch();
                 } else {
-                  return MobileCreateMatch();
+                  return DesktopCreateMatch();
                 }
               });
             } else {
