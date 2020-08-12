@@ -1,4 +1,5 @@
 import 'package:TridentAdmin/modals/Match.dart';
+import 'package:TridentAdmin/screens/desktop/create_group.dart';
 import 'package:TridentAdmin/screens/distribute_reward_page.dart';
 import 'package:TridentAdmin/screens/edit_match_page.dart';
 import 'package:TridentAdmin/screens/post_result_page.dart';
@@ -170,10 +171,13 @@ class _UpcomingMatchesState extends State<UpcomingMatches> {
                                                 rootNavigator: true)
                                             .push(MaterialPageRoute(
                                                 builder: (context) =>
-                                                    PostResult(matchId: id)));
+                                                    CreateGroup(
+                                                        noOfGroups: snapshot
+                                                            .data[index]
+                                                            .noOfGroups,
+                                                        matchId: id)));
                                       },
-                                      child: _buttonFunctionName(
-                                          snapshot.data[index].resultOut),
+                                      child: Text('Create Groups'),
                                       textColor: Colors.white,
                                     ),
                                   ),
@@ -192,14 +196,6 @@ class _UpcomingMatchesState extends State<UpcomingMatches> {
             }
           }),
     );
-  }
-
-  _buttonFunctionName(result) {
-    if (result) {
-      return Text('Edit results');
-    } else {
-      return Text('Post Result');
-    }
   }
 }
 

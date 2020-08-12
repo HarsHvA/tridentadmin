@@ -38,3 +38,12 @@ class Matches {
       this.description,
       this.noOfGroups});
 }
+
+class RoomDetailsModel {
+  String roomId;
+  String roomPassword;
+  Timestamp time;
+  String id;
+
+  RoomDetailsModel({this.roomId, this.roomPassword, this.time, this.id});
+}

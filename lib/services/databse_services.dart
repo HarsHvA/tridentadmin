@@ -20,6 +20,9 @@ class DatabaseService {
   final CollectionReference userCollection =
       Firestore.instance.collection('users');
 
+  final CollectionReference groupCollection =
+      Firestore.instance.collection('group');
+
   Future<bool> checkIfAdmin() async {
     bool dog = false;
     String userId = await AuthService().uID();
@@ -110,6 +113,16 @@ class DatabaseService {
             status: e.data['status'],
             uid: e.data['uid']);
       }).toList();
+    });
+  }
+
+  Stream<RoomDetailsModel> getRoomDetails(matchId, id) {
+    return groupCollection.document(matchId).snapshots().map((event) {
+      return RoomDetailsModel(
+          roomId: event.data[id]['roomId'] ?? '',
+          id: event.data[id]['id'] ?? '',
+          roomPassword: event.data[id]['roomPassword'] ?? '',
+          time: event.data[id]['time']);
     });
   }
 
