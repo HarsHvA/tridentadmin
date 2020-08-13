@@ -173,7 +173,7 @@ class _EditGroupDetailsState extends State<EditGroupDetails> {
               } else if (snapshot.hasError) {
                 return Text('Error');
               } else {
-                return CircularProgressIndicator();
+                return Center(child: CircularProgressIndicator());
               }
             }));
   }
@@ -192,6 +192,7 @@ class _EditGroupDetailsState extends State<EditGroupDetails> {
         }
       });
       Toast.show('Successful', context);
+      Navigator.of(context).pop();
     } catch (e) {
       Toast.show(e.toString(), context);
     }

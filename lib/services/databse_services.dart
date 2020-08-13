@@ -43,6 +43,7 @@ class DatabaseService {
   Stream<List<Matches>> get ongoingMatches {
     return matchesCollection
         .where('status', isEqualTo: 'Live')
+        .orderBy('time', descending: false)
         .snapshots()
         .map(_matchListFromSnapShot);
   }
@@ -50,6 +51,7 @@ class DatabaseService {
   Stream<List<Matches>> get upcomingMatches {
     return matchesCollection
         .where('status', isEqualTo: 'Upcoming')
+        .orderBy('time', descending: false)
         .snapshots()
         .map(_matchListFromSnapShot);
   }
@@ -57,6 +59,7 @@ class DatabaseService {
   Stream<List<Matches>> get completedMatches {
     return matchesCollection
         .where('status', isEqualTo: 'Completed')
+        .orderBy('time', descending: true)
         .snapshots()
         .map(_matchListFromSnapShot);
   }

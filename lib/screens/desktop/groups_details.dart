@@ -169,8 +169,9 @@ class _GroupDetailsPageState extends State<GroupDetailsPage> {
           'id': id,
           'time': _dateTime
         }
-      });
+      }, merge: true);
       Toast.show('Successful', context);
+      Navigator.of(context).pop();
     } catch (e) {
       Toast.show(e.toString(), context);
     }
