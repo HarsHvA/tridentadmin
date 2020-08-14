@@ -28,7 +28,10 @@ class MyApp extends StatelessWidget {
           '/feed': (context) => Feed(),
           '/createMatch': (context) => CreateMatchPage(),
           '/manageMatches': (context) => ManageMatches(),
-          '/postResult': (context) => PostResult(matchId: null),
+          '/postResult': (context) => PostResult(
+                matchId: null,
+                noOfGroups: null,
+              ),
           '/editMatch': (context) => EditMatch(matchId: null),
           '/transaction': (context) => TransactionPage(),
         });

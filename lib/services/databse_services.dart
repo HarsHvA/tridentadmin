@@ -13,9 +13,13 @@ class DatabaseService {
 
   final CollectionReference participantsCollection =
       Firestore.instance.collection('participants');
-
+  final CollectionReference participantsGroupsCollection =
+      Firestore.instance.collection('participantsGroup');
   final CollectionReference pendingTransactions =
       Firestore.instance.collection('pendingTransaction');
+
+  final CollectionReference resultsTokenCollection =
+      Firestore.instance.collection('resultsToken');
 
   final CollectionReference userCollection =
       Firestore.instance.collection('users');
@@ -34,6 +38,22 @@ class DatabaseService {
       print(e);
     }
     if (dog) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> isUserResultOut(matchId, uid) async {
+    bool resultOut = false;
+    try {
+      await resultsTokenCollection.document(matchId).get().then((value) {
+        resultOut = value.data[uid] ?? false;
+      });
+    } catch (e) {
+      print(e);
+    }
+    if (resultOut) {
       return true;
     } else {
       return false;
@@ -73,6 +93,24 @@ class DatabaseService {
             gameName: list[i]['gameName'],
             name: list[i]['name'],
             uid: list[i]['uid']));
+      }
+      return participantList;
+    });
+  }
+
+  Stream<List<Participants>> getParticipantGroupList(matchId, groupNo) {
+    return participantsGroupsCollection
+        .document(matchId)
+        .snapshots()
+        .map((event) {
+      List<Participants> participantList = [];
+      List list = event.data[groupNo];
+      for (var i = 0; i < list.length; i++) {
+        participantList.add(Participants(
+            name: list[i]['name'],
+            gameName: list[i]['gameName'],
+            uid: list[i]['uid'],
+            resultOut: list[i]['resultOut'] ?? false));
       }
       return participantList;
     });

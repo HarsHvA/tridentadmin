@@ -9,25 +9,28 @@ import 'package:toast/toast.dart';
 
 class PostResult extends StatefulWidget {
   final String matchId;
-
-  PostResult({Key key, @required this.matchId}) : super(key: key);
+  final int noOfGroups;
+  PostResult({Key key, @required this.matchId, @required this.noOfGroups})
+      : super(key: key);
   @override
-  _PostResultState createState() => _PostResultState(matchId);
+  _PostResultState createState() => _PostResultState(matchId, noOfGroups);
 }
 
 class _PostResultState extends State<PostResult> {
   String matchId;
-  _PostResultState(this.matchId);
-  List<Map<String, String>> resultList = [];
-  List<String> _kills, _moneyWon = [];
-  List<TextEditingController> _killsControllerList =
-      List.generate(101, (i) => TextEditingController());
-  List<TextEditingController> _moneyControllerList =
-      List.generate(101, (i) => TextEditingController());
+  int noOfGroups;
+  int perKill;
+  int userKills;
+  int rewards;
+  _PostResultState(this.matchId, this.noOfGroups);
   ProgressDialog pr;
+  int groupNo = 0;
+  final formKey = GlobalKey<FormState>();
+  final key = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     double unitHeightValue = MediaQuery.of(context).size.height * 0.01;
+    double unitWidthValue = MediaQuery.of(context).size.width * 0.01;
     pr = ProgressDialog(context,
         type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
     pr.style(
@@ -46,458 +49,609 @@ class _PostResultState extends State<PostResult> {
           color: Colors.black, fontSize: 12.0, fontWeight: FontWeight.w600),
     );
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Post Result',
-          style: TextStyle(color: Colors.white),
+        appBar: AppBar(
+          title: Text(
+            'Post Result',
+            style: TextStyle(color: Colors.white),
+          ),
+          centerTitle: true,
+          elevation: 0,
+          brightness: Brightness.light,
+          backgroundColor: Colors.black,
         ),
-        centerTitle: true,
-        elevation: 0,
-        brightness: Brightness.light,
-        backgroundColor: Colors.black,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            StreamBuilder<Matches>(
-                stream: DatabaseService().getMatchDetails(matchId),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: Card(
-                              elevation: 10,
+        body: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              children: [
+                StreamBuilder<Matches>(
+                    stream: DatabaseService().getMatchDetails(matchId),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        perKill = snapshot.data.perKill;
+                        return Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        'Game : ' + snapshot.data.game ?? '',
-                                        style: TextStyle(
-                                            fontSize: unitHeightValue * 2),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        'id : ' + snapshot.data.id ?? '',
-                                        style: TextStyle(
-                                            fontSize: unitHeightValue * 2),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        'matchNo : ' + snapshot.data.matchNo ??
-                                            '',
-                                        style: TextStyle(
-                                            fontSize: unitHeightValue * 2),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        'status : ' + snapshot.data.status ??
-                                            '',
-                                        style: TextStyle(
-                                            fontSize: unitHeightValue * 2.5,
-                                            color: Colors.red.shade900),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text('maxParticipants : ' +
-                                              snapshot.data.maxParticipants
-                                                  .toString() ??
-                                          ''),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                          'name : ' + snapshot.data.name ?? ''),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text('prizePool : ' +
-                                              snapshot.data.prizePool ??
-                                          ''),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text('perKill : ' +
-                                              snapshot.data.perKill
-                                                  .toString() ??
-                                          ''),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text('ticket : ' +
-                                              snapshot.data.ticket.toString() ??
-                                          ''),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text('time : ' +
-                                              snapshot.data.time
-                                                  .toDate()
-                                                  .toLocal()
-                                                  .toString() ??
-                                          ''),
+                                child: Wrap(
+                                  children: [
+                                    Table(
+                                      defaultColumnWidth: FixedColumnWidth(
+                                          MediaQuery.of(context).size.width /
+                                              2),
+                                      border: TableBorder.all(
+                                          color: Colors.black26,
+                                          width: 1,
+                                          style: BorderStyle.solid),
+                                      children: [
+                                        TableRow(children: [
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .middle,
+                                              child: Center(
+                                                  child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(2.0),
+                                                child: SizedBox(
+                                                  height: unitHeightValue * 2.5,
+                                                  child: Center(
+                                                      child: Text('Game')),
+                                                ),
+                                              ))),
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .fill,
+                                              child: Center(
+                                                  child:
+                                                      Text(snapshot.data.game)))
+                                        ]),
+                                        TableRow(children: [
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .middle,
+                                              child: Center(
+                                                  child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(2.0),
+                                                child: SizedBox(
+                                                  height: unitHeightValue * 2.5,
+                                                  child: Center(
+                                                      child: Text('Name')),
+                                                ),
+                                              ))),
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .fill,
+                                              child: Center(
+                                                  child:
+                                                      Text(snapshot.data.name)))
+                                        ]),
+                                        TableRow(children: [
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .middle,
+                                              child: Center(
+                                                  child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(2.0),
+                                                child: SizedBox(
+                                                  height: unitHeightValue * 2.5,
+                                                  child: Center(
+                                                      child: Text('Perkill')),
+                                                ),
+                                              ))),
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .fill,
+                                              child: Center(
+                                                  child: Text('\u20B9 ' +
+                                                      snapshot.data.perKill
+                                                          .toString())))
+                                        ]),
+                                        TableRow(children: [
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .middle,
+                                              child: Center(
+                                                  child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(2.0),
+                                                child: SizedBox(
+                                                  height: unitHeightValue * 2.5,
+                                                  child: Center(
+                                                      child:
+                                                          Text('NoOfGroups')),
+                                                ),
+                                              ))),
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .fill,
+                                              child: Center(
+                                                  child: Text(snapshot
+                                                      .data.noOfGroups
+                                                      .toString())))
+                                        ]),
+                                        TableRow(children: [
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .middle,
+                                              child: Center(
+                                                  child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(2.0),
+                                                child: SizedBox(
+                                                  height: unitHeightValue * 2.5,
+                                                  child: Center(
+                                                      child: Text('matchNo')),
+                                                ),
+                                              ))),
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .fill,
+                                              child: Center(
+                                                  child: Text(
+                                                      snapshot.data.matchNo)))
+                                        ]),
+                                        TableRow(children: [
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .middle,
+                                              child: Center(
+                                                  child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(2.0),
+                                                child: SizedBox(
+                                                  height: unitHeightValue * 2.5,
+                                                  child: Center(
+                                                      child: Text('Status')),
+                                                ),
+                                              ))),
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .fill,
+                                              child: Center(
+                                                  child: Text(
+                                                      snapshot.data.status)))
+                                        ]),
+                                        TableRow(children: [
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .middle,
+                                              child: Center(
+                                                  child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(2.0),
+                                                child: SizedBox(
+                                                  height: unitHeightValue * 2.5,
+                                                  child: Center(
+                                                      child: Text('Ticket')),
+                                                ),
+                                              ))),
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .fill,
+                                              child: Center(
+                                                  child: Text(snapshot
+                                                      .data.ticket
+                                                      .toString())))
+                                        ]),
+                                      ],
                                     ),
                                   ],
                                 ),
-                              )),
-                        ));
-                  } else {
-                    return Center(child: Text('Loading Match data'));
-                  }
-                }),
-            StreamBuilder<List<Participants>>(
-                stream: DatabaseService().getParticipantList(matchId),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: snapshot.data.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  // decoration: BoxDecoration(
-                                  //     border:
-                                  //         Border.all(color: Colors.black)),
-                                  child: Card(
-                                    elevation: unitHeightValue * 5,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            'In-GameName : ' +
-                                                    snapshot
-                                                        .data[index].gameName ??
-                                                '',
-                                            style: TextStyle(
-                                                fontSize: unitHeightValue * 2),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            'Name : ' +
-                                                    snapshot.data[index].name ??
-                                                '',
-                                            style: TextStyle(
-                                                fontSize: unitHeightValue * 2),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text('UserId : ' +
-                                                  snapshot.data[index].uid ??
-                                              ''),
-                                        ),
-                                        buildTextField(unitHeightValue, index),
-                                        Container(
+                              ),
+                            ),
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text('Error fetching data'),
+                        );
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    }),
+                Container(
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                'Group no',
+                                style: TextStyle(
+                                    fontSize: unitHeightValue * 2,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black87),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              TextFormField(
+                                initialValue: groupNo.toString(),
+                                onSaved: (value) {
+                                  groupNo = int.parse(value);
+                                },
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 10),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey[400])),
+                                  border: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey[400])),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            child: RaisedButton(
+                              color: Colors.red,
+                              colorBrightness: Brightness.light,
+                              onPressed: () {
+                                formKey.currentState.save();
+                                setState(() {});
+                              },
+                              child: Text('Change group'),
+                              textColor: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // Container(
+                //   width: MediaQuery.of(context).size.width,
+                //   child: RaisedButton(
+                //     color: Colors.black,
+                //     colorBrightness: Brightness.light,
+                //     onPressed: () async {
+                //       CollectionReference matchsCollection =
+                //           Firestore.instance.collection('customMatchRooms');
+                //       pr.show();
+                //       try {
+                //         await matchsCollection
+                //             .document(matchId)
+                //             .setData({'result': true}, merge: true);
+                //         pr.hide();
+                //         Toast.show('Successful!', context);
+                //         Navigator.of(context).pop();
+                //       } catch (e) {
+                //         pr.hide();
+                //         Toast.show(e.toString(), context);
+                //       }
+                //     },
+                //     child: Text('Post group result'),
+                //     textColor: Colors.white,
+                //   ),
+                // ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: StreamBuilder<List<Participants>>(
+                        stream: DatabaseService().getParticipantGroupList(
+                            matchId, groupNo.toString()),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: snapshot.data.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return Container(
                                           width:
                                               MediaQuery.of(context).size.width,
-                                          child: RaisedButton(
-                                            color: Colors.red,
-                                            colorBrightness: Brightness.light,
-                                            onPressed: () {
-                                              resultList.add({
-                                                'playerId': snapshot
-                                                    .data[index].gameName,
-                                                'kills':
-                                                    _killsControllerList[index]
-                                                            .text
-                                                            .isNotEmpty
-                                                        ? _killsControllerList[
-                                                                index]
-                                                            .text
-                                                        : 0.toString(),
-                                                'moneyWon':
-                                                    _moneyControllerList[index]
-                                                            .text
-                                                            .isNotEmpty
-                                                        ? _moneyControllerList[
-                                                                index]
-                                                            .text
-                                                        : 0.toString()
-                                              });
-                                            },
-                                            child: Text('Add to result'),
-                                            textColor: Colors.white,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              })),
-                    );
-                  } else {
-                    return Container(
-                      child: Text('Loading participants list...'),
-                    );
-                  }
-                }),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                child: RaisedButton(
-                  color: Colors.red,
-                  colorBrightness: Brightness.light,
-                  onPressed: () {
-                    if (resultList.isEmpty) {
-                      Toast.show('Please add data correctly', context);
-                    } else {
-                      _showResultBottomSheet();
-                    }
-                  },
-                  child: Text('Pubilsh result'),
-                  textColor: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildTextField(
-    unitHeightValue,
-    index,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                'Kills',
-                style: TextStyle(
-                    fontSize: unitHeightValue * 2,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black87),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              TextField(
-                controller: _killsControllerList[index],
-                inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
-                keyboardType: TextInputType.number,
-                onSubmitted: (value) {
-                  _kills[index] = value;
-                },
-                decoration: InputDecoration(
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey[400])),
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey[400])),
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                'MoneyEarned',
-                style: TextStyle(
-                    fontSize: unitHeightValue * 2,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black87),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              TextField(
-                controller: _moneyControllerList[index],
-                inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
-                keyboardType: TextInputType.number,
-                onSubmitted: (value) {
-                  _moneyWon[index] = value;
-                },
-                decoration: InputDecoration(
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey[400])),
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey[400])),
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  _postResult() async {
-    pr.show();
-    CollectionReference resultCollection =
-        Firestore.instance.collection('results');
-
-    CollectionReference matchsCollection =
-        Firestore.instance.collection('customMatchRooms');
-    try {
-      await Firestore.instance.runTransaction((transaction) async {
-        return await transaction
-            .set(resultCollection.document(matchId), {'results': resultList});
-      });
-      await matchsCollection
-          .document(matchId)
-          .setData({'result': true}, merge: true);
-      pr.hide();
-      Toast.show('Successful! result uploaded', context);
-      Navigator.pop(context);
-      Navigator.pop(context);
-    } catch (e) {
-      pr.hide();
-      Toast.show(e.toString(), context);
-    }
-  }
-
-  void _showResultBottomSheet() {
-    showDialog(
-        context: context,
-        builder: (BuildContext bc) {
-          return AlertDialog(
-            content: SingleChildScrollView(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('GameId'),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('kills'),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Winnings'),
-                        )
-                      ],
-                    ),
-                    Divider(
-                      color: Colors.red.shade900,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Container(
-                          height: 1000,
-                          width: 100,
-                          child: ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: resultList.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Text(
-                                    resultList[index]['playerId'] ?? '');
-                              }),
-                        ),
-                        Container(
-                            height: 1000,
-                            child: VerticalDivider(color: Colors.red)),
-                        Container(
-                          height: 1000,
-                          width: 50,
-                          child: ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: resultList.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Text(resultList[index]['kills'] ?? '');
-                              }),
-                        ),
-                        Container(
-                            height: 1000,
-                            child: VerticalDivider(color: Colors.red)),
-                        Container(
-                          height: 1000,
-                          width: 50,
-                          child: ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: resultList.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Text(
-                                    '\u20B9' + resultList[index]['moneyWon'] ??
-                                        '');
-                              }),
-                        )
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                          'Please make sure all the data is correct and their are no duplicates before submitting.'),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: RaisedButton(
-                        color: Colors.red.shade900,
-                        colorBrightness: Brightness.light,
-                        onPressed: () {
-                          resultList.clear();
-                          Navigator.pop(context);
-                        },
-                        child: Text('Reset'),
-                        textColor: Colors.white,
-                      ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: RaisedButton(
-                        color: Colors.green,
-                        colorBrightness: Brightness.light,
-                        onPressed: () {
-                          if (resultList.isEmpty) {
-                            Toast.show('Please add data correctly', context);
+                                          child: FutureBuilder<bool>(
+                                              future: DatabaseService()
+                                                  .isUserResultOut(matchId,
+                                                      snapshot.data[index].uid),
+                                              builder: (context, snap) {
+                                                if (snap.hasData) {
+                                                  if (snap.data) {
+                                                    return Container();
+                                                  } else {
+                                                    return GestureDetector(
+                                                      child: Card(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: <Widget>[
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Text(
+                                                                'In-GameName : ' +
+                                                                        snapshot
+                                                                            .data[index]
+                                                                            .gameName ??
+                                                                    '',
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        unitHeightValue *
+                                                                            2),
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Text(
+                                                                'Name : ' +
+                                                                        snapshot
+                                                                            .data[index]
+                                                                            .name ??
+                                                                    '',
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        unitHeightValue *
+                                                                            2),
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Text('UserId : ' +
+                                                                      snapshot
+                                                                          .data[
+                                                                              index]
+                                                                          .uid ??
+                                                                  ''),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      onTap: () {
+                                                        _showDialog(
+                                                            snapshot.data[index]
+                                                                .uid,
+                                                            snapshot.data[index]
+                                                                .gameName,
+                                                            perKill,
+                                                            index);
+                                                      },
+                                                    );
+                                                  }
+                                                } else if (snapshot.hasError) {
+                                                  return Center(
+                                                    child: Text(
+                                                        'Error fetching data'),
+                                                  );
+                                                } else {
+                                                  return Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  );
+                                                }
+                                              }),
+                                        );
+                                      })),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text(
+                                  'Error fetching data or no participants'),
+                            );
                           } else {
-                            _postResult();
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
                           }
-                        },
-                        child: Text('Pubilsh result'),
-                        textColor: Colors.white,
+                        }),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ));
+  }
+
+  _showDialog(uid, gameId, perKill, index) {
+    double unitHeightValue = MediaQuery.of(context).size.height * 0.01;
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Form(
+            key: key,
+            child: Container(
+              child: Wrap(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'In-GameName : ' + gameId,
+                          style: TextStyle(fontSize: unitHeightValue * 2),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'UID : ' + uid,
+                          style: TextStyle(fontSize: unitHeightValue * 2),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('perKill: \u20B9 ' + perKill.toString()),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'No of kills by the user',
+                              style: TextStyle(
+                                  fontSize: unitHeightValue * 2,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.black87),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            TextFormField(
+                              onSaved: (value) {
+                                userKills = int.parse(value);
+                              },
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 10),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey[400])),
+                                border: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey[400])),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Reward',
+                              style: TextStyle(
+                                  fontSize: unitHeightValue * 2,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.black87),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            TextFormField(
+                              onSaved: (value) {
+                                rewards = int.parse(value);
+                              },
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 10),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey[400])),
+                                border: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey[400])),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: RaisedButton(
+                            color: Colors.red,
+                            colorBrightness: Brightness.light,
+                            onPressed: () async {
+                              key.currentState.save();
+                              CollectionReference resultCollection =
+                                  Firestore.instance.collection('results');
+                              CollectionReference userCollection =
+                                  Firestore.instance.collection('users');
+
+                              CollectionReference resultsTokenCollection =
+                                  Firestore.instance.collection('resultsToken');
+
+                              pr.show();
+                              try {
+                                await resultCollection
+                                    .document(matchId)
+                                    .setData({
+                                  groupNo.toString(): FieldValue.arrayUnion([
+                                    {
+                                      'uid': uid,
+                                      'kills': userKills,
+                                      'reward': rewards,
+                                      'gameId': gameId,
+                                    }
+                                  ])
+                                }, merge: true);
+
+                                int newReward = rewards;
+                                int balance = await userCollection
+                                    .document(uid)
+                                    .get()
+                                    .then((value) {
+                                  return value.data['walletAmount'] ?? 0;
+                                });
+                                newReward += balance;
+                                await Firestore.instance
+                                    .runTransaction((transaction) async {
+                                  return await transaction.update(
+                                      userCollection.document(uid),
+                                      {'walletAmount': newReward});
+                                });
+
+                                await resultsTokenCollection
+                                    .document(matchId)
+                                    .setData({uid: true}, merge: true);
+
+                                pr.hide();
+                                Toast.show('Successful!', context);
+                                Navigator.of(context).pop();
+                                setState(() {});
+                              } catch (e) {
+                                pr.hide();
+                                Toast.show(e.toString(), context);
+                              }
+                            },
+                            child: Text('Post Result'),
+                            textColor: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }
